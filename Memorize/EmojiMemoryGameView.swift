@@ -12,77 +12,27 @@ struct EmojiMemoryGameView: View {
 
     var body: some View {
         VStack {
-            Text("Memorize!")
-                .font(.largeTitle)
             cards
-            Button("Shuffle") {
-                viewModel.shuffle()
+            Button("New Game") {
+                viewModel.newGame()
             }
-//            HStack {
-//                themeButtons
-//            }
         }.padding()
     }
     
     var cards: some View {
         ScrollView {
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 120), spacing: 0)], spacing: 0) {
-                ForEach(viewModel.cards.indices, id: \.self) { index in
-                    CardView(viewModel.cards[index])
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 75), spacing: 0)], spacing: 0) {
+                ForEach(viewModel.cards) { card in
+                    CardView(card)
                         .aspectRatio(2/3, contentMode: .fit)
                         .padding(4)
-                }
+                        .onTapGesture {
+                            viewModel.choose(card)
+                        }
+                }.animation(.default, value: viewModel.cards)
             }
         }
     }
-    
-//    func cardThemeButton(with Theme: [String], Symbol: String, Label: String) -> some View {
-//        Button {
-//            self.theme = (Theme + Theme).shuffled()
-//            self.currentTheme = Label
-//        } label: {
-//            VStack {
-//                Image(systemName: Symbol)
-//                    .imageScale(.large)
-//                    .font(.title)
-//                Text(Label)
-//                    .font(.caption)
-//            }
-//        }.disabled(currentTheme == Label)
-//    }
-//    
-//    var themeButtons: some View {
-//        HStack {
-//            cardThemeButton(with: birthdayTheme, Symbol: "sun.max.circle.fill", Label: "Birthday")
-//            cardThemeButton(with: christmasTheme, Symbol: "gift.circle.fill", Label: "Christmas")
-//            cardThemeButton(with: halloweenTheme, Symbol: "moon.dust.circle.fill", Label: "Halloween")
-//        }
-//    }
-    
-//    func cardAdjusterButton(by offset: Int, Symbol: String) -> some View {
-//        Button {
-//            numOfCards += offset
-//        } label: {
-//            Image(systemName: Symbol)
-//        }.disabled(numOfCards + offset == 0 || numOfCards + offset > halloweenTheme.count)
-//    }
-//    
-//    var addCardButton: some View {
-//        cardAdjusterButton(by: +1, Symbol: "plus.circle")
-//    }
-//    
-//    var removeCardButton: some View {
-//        cardAdjusterButton(by: -1, Symbol: "minus.circle")
-//    }
-//    
-//    var cardAdjusters: some View {
-//        HStack {
-//            removeCardButton
-//            addCardButton
-//        }
-//            .imageScale(.large)
-//            .font(.title3)
-//    }
 }
 
 struct CardView: View {
@@ -99,6 +49,7 @@ struct CardView: View {
                 .opacity(card.isFaceUp ? 0 : 1)
             Group {
                 RoundedRectangle(cornerRadius: /*@START_MENU_TOKEN@*/25.0/*@END_MENU_TOKEN@*/)
+                    .fill(.white)
                     .strokeBorder(lineWidth: 2)
                     .foregroundStyle(.orange)
                 Text(card.content)
@@ -106,7 +57,7 @@ struct CardView: View {
                     .minimumScaleFactor(0.01)
                     .aspectRatio(1, contentMode: .fit)
             }.opacity(card.isFaceUp ? 1 : 0)
-        }
+        }.opacity(card.isMatched ? 0 : 1)
     }
 }
 
