@@ -13,8 +13,13 @@ struct EmojiMemoryGameView: View {
     var body: some View {
         VStack {
             cards
-            Button("New Game") {
-                viewModel.newGame()
+            HStack {
+                Spacer()
+                Button("New Game") {
+                    viewModel.newGame()
+                }
+                    .font(.title2)
+                    .buttonStyle(.bordered)
             }
         }.padding()
     }
