@@ -6,6 +6,7 @@
 //  Synonymous with a model
 
 import Foundation
+import SwiftUI
 
 struct MemoryGame<CardContent> where CardContent: Equatable {
     private(set) var cards: [Card]
@@ -22,7 +23,7 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
         cards.shuffle()
     }
     
-    var theOnlyCardThatsUp: Int?
+    private var theOnlyCardThatsUp: Int?
     
     mutating func choose(_ card: Card) {
         guard let index = cards.firstIndex(of: card) else { return }
@@ -39,7 +40,6 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
             }
             theOnlyCardThatsUp = index
         }
-        
         cards[index].isFaceUp = true
     }
     
@@ -53,6 +53,13 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
     
     mutating func shuffle() {
         cards.shuffle()
+    }
+    
+    struct Theme {
+        var name: String
+        var emoji: [String]
+        var cardCount: Int
+        var color: Color
     }
     
     struct Card: Equatable, Identifiable, CustomDebugStringConvertible {

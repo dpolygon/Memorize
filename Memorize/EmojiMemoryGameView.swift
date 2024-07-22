@@ -14,6 +14,7 @@ struct EmojiMemoryGameView: View {
         VStack {
             cards
             HStack {
+                themes
                 Spacer()
                 Button("New Game") {
                     viewModel.newGame()
@@ -22,6 +23,31 @@ struct EmojiMemoryGameView: View {
                     .buttonStyle(.bordered)
             }
         }.padding()
+    }
+    
+    func createThemeButtons(title: String, icon: String) -> some View{
+        Button {
+            
+        } label: {
+            VStack {
+                Image(systemName: icon).font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
+                Text(title).font(.caption)
+            }
+        }
+            .padding(.leading)
+    }
+    
+    var themes: some View {
+        ScrollView(.horizontal) {
+            HStack(alignment: .bottom) {
+                createThemeButtons(title: "Birthday", icon: "birthday.cake")
+                createThemeButtons(title: "Earth", icon: "leaf")
+                createThemeButtons(title: "New Years", icon: "fireworks")
+                createThemeButtons(title: "Internet", icon: "globe")
+                createThemeButtons(title: "Food", icon: "takeoutbag.and.cup.and.straw")
+                createThemeButtons(title: "Space", icon: "sun.max.circle")
+            }
+        }.scrollIndicators(.hidden)
     }
     
     var cards: some View {
@@ -36,7 +62,7 @@ struct EmojiMemoryGameView: View {
                         }
                 }.animation(.default, value: viewModel.cards)
             }
-        }
+        }.scrollIndicators(.hidden)
     }
 }
 
