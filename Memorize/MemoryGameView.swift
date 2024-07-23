@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct EmojiMemoryGameView: View {
-    @ObservedObject var viewModel: EmojiMemoryGame
+struct MemoryGameView: View {
+    @ObservedObject var viewModel: MemoryGame
 
     var body: some View {
         VStack {
@@ -67,9 +67,9 @@ struct EmojiMemoryGameView: View {
 }
 
 struct CardView: View {
-    let card: MemoryGame<String>.Card
+    let card: MemoryGameModel<String>.Card
     
-    init(_ card: MemoryGame<String>.Card) {
+    init(_ card: MemoryGameModel<String>.Card) {
         self.card = card
     }
     
@@ -93,5 +93,5 @@ struct CardView: View {
 }
 
 #Preview {
-    EmojiMemoryGameView(viewModel: EmojiMemoryGame())
+    MemoryGameView(viewModel: MemoryGame())
 }

@@ -1,76 +1,91 @@
 //
-//  MemorizeGame.swift
+//  EmojiMemoryGame.swift
 //  Memorize
 //
 //  Created by Daniel Gonzalez on 7/18/24.
-//  Synonymous with a model
+//  Synonymous with ViewModel link between model <-> UI
 
-import Foundation
 import SwiftUI
 
-struct MemoryGame<CardContent> where CardContent: Equatable {
-    private(set) var cards: [Card]
+
+//@State var theme: [String]
+//@State var currentTheme: String
+
+class MemoryGame: ObservableObject {
+    @Published private var model: MemoryGameModel<String>
+    var themes: [String: Theme] = [
+        "Birthday": Theme(name: "Birthday",
+                          symbol: "birthday.cake",
+                          emoji: ["🥳", "🤩", "🎂", "🎉", "🎊", "🎁", "🎈", "💃", "🕺", "🎁", "💵"].shuffled(),
+                          color: "lightblue"),
+        "Earth": Theme(name: "Earth",
+                       symbol: "leaf",
+                       emoji: ["🌍", "🌱", "🌳", "🌿", "🍃", "🌾", "🌽", "🍎", "🍇", "🌊", "🐳", "🐬", "🦈", "🌄", "🌅", "🌇", "🌉"].shuffled(),
+                       color: "blue"),
+        "New Years": Theme(name: "New Years",
+                           symbol: "fireworks",
+                           emoji: ["🎆", "🥂", "🎉", "🕛", "🍾", "🎅", "🎄", "🥳", "🌟", "🎇"].shuffled(),
+                           color: "red"),
+        "Internet": Theme(name: "Internet",
+                          symbol: "globe",
+                          emoji: ["💬", "💭", "👥", "🌎", "🌏", "🌐", "📱", "💻", "📚", "💰", "🔗"].shuffled(),
+                          color: "grey"),
+        "Food": Theme(name: "Food",
+                      symbol: "takeoutbag.and.cup.and.straw",
+                      emoji: ["🥑", "🍅", "🥬", "🧊", "🍹", "🧉", "🥤", "🥩", "🍳", "🍕", "🍝", "🥓"].shuffled(),
+                      color: "yellow"),
+        "Space": Theme(name: "Space",
+                       symbol: "moon.stars",
+                       emoji: ["🚀", "👨‍🚀", "🌟", "👩‍🚀", "🌌", "👽", "🚀", "🌠", "🔭", "💫"].shuffled(),
+                       color: "black")
+    ]
     
-    init(numberOfPairsOfCards: Int, cardContentFactory: (Int) -> CardContent) {
-        cards = []
-        
-        for pairIndex in 0..<max(2, numberOfPairsOfCards) {
-            let content: CardContent = cardContentFactory(pairIndex)
-            cards.append(Card(content: content, id: "a\(pairIndex)"))
-            cards.append(Card(content: content, id: "b\(pairIndex)"))
-        }
-        
-        cards.shuffle()
+    init() {
+        self.model = MemoryGame.createGameModel(theme: themes.randomElement()!.value)
     }
-    
-    private var theOnlyCardThatsUp: Int?
-    
-    mutating func choose(_ card: Card) {
-        guard let index = cards.firstIndex(of: card) else { return }
-        guard !cards[index].isFaceUp && !cards[index].isMatched else { return }
-        if let IndexOfComparingCard = theOnlyCardThatsUp {
-            if cards[index].content == cards[IndexOfComparingCard].content {
-                cards[index].isMatched = true
-                cards[IndexOfComparingCard].isMatched = true
+        
+    private static func createGameModel(theme: Theme) -> MemoryGameModel<String> {
+        return MemoryGameModel(numberOfPairsOfCards: theme.emoji.count) { pairIndex in
+            if theme.emoji.indices.contains(pairIndex) {
+                return theme.emoji[pairIndex]
+            } else {
+                return "⚠️"
             }
-            theOnlyCardThatsUp = nil
-        } else {
-            for index in cards.indices {
-                cards[index].isFaceUp = false
-            }
-            theOnlyCardThatsUp = index
         }
-        cards[index].isFaceUp = true
     }
     
-    mutating func newGame() {
-        for index in cards.indices {
-            cards[index].isFaceUp = false
-            cards[index].isMatched = false
-        }
-        cards.shuffle()
+    
+    var cards: Array<MemoryGameModel<String>.Card> {
+        return model.cards
     }
     
-    mutating func shuffle() {
-        cards.shuffle()
+    // MARK: - User Intents
+    
+    func shuffle() {
+        model.shuffle()
     }
     
-    struct Theme {
-        var name: String
-        var emoji: [String]
-        var cardCount: Int
-        var color: Color
+    func newGame() {
+        model.newGame()
     }
     
-    struct Card: Equatable, Identifiable, CustomDebugStringConvertible {
-        
-        var isFaceUp: Bool = false
-        var isMatched: Bool = false
-        let content: CardContent
-        
-        var id: String
-        var debugDescription: String {
-            "\(id): \(content) looking up -> \(isFaceUp) is matched -> \(isMatched)"
-        }
+    func choose(_ card: MemoryGameModel<String>.Card) {
+        model.choose(card)
+    }
+}
+
+struct Theme {
+    var name: String
+    var symbol: String
+    var emoji: [String]
+    var numOfPairs: Int
+    var color: String
+    
+    init(name: String, symbol: String, emoji: [String], color: String) {
+        self.name = name
+        self.symbol = symbol
+        self.emoji = emoji
+        self.numOfPairs = 9
+        self.color = color
     }
 }
