@@ -13,7 +13,8 @@ import SwiftUI
 
 class MemoryGame: ObservableObject {
     @Published private var model: MemoryGameModel<String>
-    var themes: [String: Theme] = [
+    private(set) var currentTheme: String
+    private(set) var themes: [String: Theme] = [
         "Birthday": Theme(name: "Birthday",
                           symbol: "birthday.cake",
                           emoji: ["🥳", "🤩", "🎂", "🎉", "🎊", "🎁", "🎈", "💃", "🕺", "🎁", "💵"].shuffled(),
@@ -40,11 +41,21 @@ class MemoryGame: ObservableObject {
                        color: "black")
     ]
     
+    func getThemes() -> [Theme] {
+        var outthemes: [Theme] = []
+        for theme in themes {
+            outthemes.append(theme.value)
+        }
+        return outthemes
+    }
+    
     init() {
-        self.model = MemoryGame.createGameModel(theme: themes.randomElement()!.value)
+        let theme = themes.randomElement()!.value
+        currentTheme = theme.name
+        self.model = MemoryGame.createGameModel(with: theme)
     }
         
-    private static func createGameModel(theme: Theme) -> MemoryGameModel<String> {
+    private static func createGameModel(with theme: Theme) -> MemoryGameModel<String> {
         return MemoryGameModel(numberOfPairsOfCards: theme.emoji.count) { pairIndex in
             if theme.emoji.indices.contains(pairIndex) {
                 return theme.emoji[pairIndex]
@@ -61,6 +72,11 @@ class MemoryGame: ObservableObject {
     
     // MARK: - User Intents
     
+    func newTheme(with theme: String) {
+        currentTheme = theme
+        self.model = MemoryGame.createGameModel(with: self.themes[theme]!)
+    }
+    
     func shuffle() {
         model.shuffle()
     }
@@ -74,7 +90,7 @@ class MemoryGame: ObservableObject {
     }
 }
 
-struct Theme {
+struct Theme: Identifiable {
     var name: String
     var symbol: String
     var emoji: [String]
@@ -88,4 +104,6 @@ struct Theme {
         self.numOfPairs = 9
         self.color = color
     }
+    
+    var id = UUID()
 }

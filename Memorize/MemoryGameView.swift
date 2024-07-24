@@ -27,7 +27,7 @@ struct MemoryGameView: View {
     
     func createThemeButtons(title: String, icon: String) -> some View{
         Button {
-            
+            viewModel.newTheme(with: title)
         } label: {
             VStack {
                 Image(systemName: icon).font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
@@ -35,17 +35,15 @@ struct MemoryGameView: View {
             }
         }
             .padding(.leading)
+            .disabled(viewModel.currentTheme == title)
     }
     
     var themes: some View {
         ScrollView(.horizontal) {
             HStack(alignment: .bottom) {
-                createThemeButtons(title: "Birthday", icon: "birthday.cake")
-                createThemeButtons(title: "Earth", icon: "leaf")
-                createThemeButtons(title: "New Years", icon: "fireworks")
-                createThemeButtons(title: "Internet", icon: "globe")
-                createThemeButtons(title: "Food", icon: "takeoutbag.and.cup.and.straw")
-                createThemeButtons(title: "Space", icon: "sun.max.circle")
+                ForEach(viewModel.getThemes()) { theme in
+                    createThemeButtons(title: theme.name, icon: theme.symbol)
+                }
             }
         }.scrollIndicators(.hidden)
     }
