@@ -52,7 +52,7 @@ struct MemoryGameView: View {
         ScrollView {
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 75), spacing: 0)], spacing: 0) {
                 ForEach(viewModel.cards) { card in
-                    CardView(card)
+                    CardView(card, color: viewModel.getColor())
                         .aspectRatio(2/3, contentMode: .fit)
                         .padding(4)
                         .onTapGesture {
@@ -66,15 +66,17 @@ struct MemoryGameView: View {
 
 struct CardView: View {
     let card: MemoryGameModel<String>.Card
+    let themeColor: Color
     
-    init(_ card: MemoryGameModel<String>.Card) {
+    init(_ card: MemoryGameModel<String>.Card, color: Color) {
         self.card = card
+        self.themeColor = color
     }
     
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: /*@START_MENU_TOKEN@*/25.0/*@END_MENU_TOKEN@*/)
-                .foregroundStyle(.orange)
+                .foregroundStyle(themeColor)
                 .opacity(card.isFaceUp ? 0 : 1)
             Group {
                 RoundedRectangle(cornerRadius: /*@START_MENU_TOKEN@*/25.0/*@END_MENU_TOKEN@*/)

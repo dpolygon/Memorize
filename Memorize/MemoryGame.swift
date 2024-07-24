@@ -14,11 +14,11 @@ import SwiftUI
 class MemoryGame: ObservableObject {
     @Published private var model: MemoryGameModel<String>
     private(set) var currentTheme: String
-    private(set) var themes: [String: Theme] = [
+    private var themes: [String: Theme] = [
         "Birthday": Theme(name: "Birthday",
                           symbol: "birthday.cake",
                           emoji: ["🥳", "🤩", "🎂", "🎉", "🎊", "🎁", "🎈", "💃", "🕺", "🎁", "💵"].shuffled(),
-                          color: "lightblue"),
+                          color: "green"),
         "Earth": Theme(name: "Earth",
                        symbol: "leaf",
                        emoji: ["🌍", "🌱", "🌳", "🌿", "🍃", "🌾", "🌽", "🍎", "🍇", "🌊", "🐳", "🐬", "🦈", "🌄", "🌅", "🌇", "🌉"].shuffled(),
@@ -30,7 +30,7 @@ class MemoryGame: ObservableObject {
         "Internet": Theme(name: "Internet",
                           symbol: "globe",
                           emoji: ["💬", "💭", "👥", "🌎", "🌏", "🌐", "📱", "💻", "📚", "💰", "🔗"].shuffled(),
-                          color: "grey"),
+                          color: "gray"),
         "Food": Theme(name: "Food",
                       symbol: "takeoutbag.and.cup.and.straw",
                       emoji: ["🥑", "🍅", "🥬", "🧊", "🍹", "🧉", "🥤", "🥩", "🍳", "🍕", "🍝", "🥓"].shuffled(),
@@ -40,6 +40,26 @@ class MemoryGame: ObservableObject {
                        emoji: ["🚀", "👨‍🚀", "🌟", "👩‍🚀", "🌌", "👽", "🚀", "🌠", "🔭", "💫"].shuffled(),
                        color: "black")
     ]
+    
+    func getColor() -> Color {
+        let color: String = themes[currentTheme]!.color
+        switch color {
+        case "green":
+            return .green
+        case "blue":
+            return .blue
+        case "red":
+            return .red
+        case "gray":
+            return .gray
+        case "yellow":
+            return .yellow
+        case "black":
+            return .black
+        default:
+            return .orange
+        }
+    }
     
     func getThemes() -> [Theme] {
         var outthemes: [Theme] = []
