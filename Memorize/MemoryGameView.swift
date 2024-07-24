@@ -12,6 +12,7 @@ struct MemoryGameView: View {
 
     var body: some View {
         VStack {
+            gameOverview
             cards
             HStack {
                 themes
@@ -38,6 +39,21 @@ struct MemoryGameView: View {
             .disabled(viewModel.currentTheme == title)
     }
     
+    var gameOverview: some View {
+        HStack {
+            score.padding(.leading)
+            Spacer()
+        }
+    }
+    
+    var score: some View {
+        Text(String(format: "%02d", viewModel.score))
+            .font(.largeTitle)
+            .fontWeight(.bold)
+            .contentTransition(.numericText(value: Double(viewModel.score)))
+            .fontDesign(.monospaced)
+    }
+    
     var themes: some View {
         ScrollView(.horizontal) {
             HStack(alignment: .bottom) {
@@ -56,7 +72,9 @@ struct MemoryGameView: View {
                         .aspectRatio(2/3, contentMode: .fit)
                         .padding(4)
                         .onTapGesture {
-                            viewModel.choose(card)
+                            withAnimation {
+                                viewModel.choose(card)
+                            }
                         }
                 }.animation(.default, value: viewModel.cards)
             }

@@ -85,6 +85,10 @@ class MemoryGame: ObservableObject {
         }
     }
     
+    var score: Int {
+        return model.score
+    }
+    
     var cards: Array<MemoryGameModel<String>.Card> {
         return model.cards
     }
