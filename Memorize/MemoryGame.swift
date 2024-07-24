@@ -37,7 +37,7 @@ class MemoryGame: ObservableObject {
                       color: "yellow"),
         "Space": Theme(name: "Space",
                        symbol: "moon.stars",
-                       emoji: ["🚀", "👨‍🚀", "🌟", "👩‍🚀", "🌌", "👽", "🌠", "🔭", "💫"].shuffled(),
+                       emoji: ["🚀", "👨‍🚀", "🌟", "👩‍🚀", "🌌", "👽", "🌠", "🔭", "💫"],
                        color: "black")
     ]
     
