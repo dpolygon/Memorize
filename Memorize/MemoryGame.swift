@@ -17,27 +17,27 @@ class MemoryGame: ObservableObject {
     private var themes: [String: Theme] = [
         "Birthday": Theme(name: "Birthday",
                           symbol: "birthday.cake",
-                          emoji: ["🥳", "🤩", "🎂", "🎉", "🎊", "🎁", "🎈", "💃", "🕺", "🎁", "💵"].shuffled(),
+                          emoji: ["🥳", "🤩", "🎂", "🎉", "🎊", "🎁", "🎈", "💃", "🕺", "💵"],
                           color: "green"),
         "Earth": Theme(name: "Earth",
                        symbol: "leaf",
-                       emoji: ["🌍", "🌱", "🌳", "🌿", "🍃", "🌾", "🌽", "🍎", "🍇", "🌊", "🐳", "🐬", "🦈", "🌄", "🌅", "🌇", "🌉"].shuffled(),
+                       emoji: ["🌍", "🌱", "🌳", "🌿", "🍃", "🌾", "🌽", "🍎", "🍇", "🌊", "🐳", "🐬", "🦈", "🌄", "🌅", "🌇", "🌉"],
                        color: "blue"),
         "New Years": Theme(name: "New Years",
                            symbol: "fireworks",
-                           emoji: ["🎆", "🥂", "🎉", "🕛", "🍾", "🎅", "🎄", "🥳", "🌟", "🎇"].shuffled(),
+                           emoji: ["🎆", "🥂", "🎉", "🕛", "🍾", "🎅", "🎄", "🥳", "🌟", "🎇"],
                            color: "red"),
         "Internet": Theme(name: "Internet",
                           symbol: "globe",
-                          emoji: ["💬", "💭", "👥", "🌎", "🌏", "🌐", "📱", "💻", "📚", "💰", "🔗"].shuffled(),
+                          emoji: ["💬", "💭", "👥", "🌎", "🌏", "🌐", "📱", "💻", "📚", "💰", "🔗"],
                           color: "gray"),
         "Food": Theme(name: "Food",
                       symbol: "takeoutbag.and.cup.and.straw",
-                      emoji: ["🥑", "🍅", "🥬", "🧊", "🍹", "🧉", "🥤", "🥩", "🍳", "🍕", "🍝", "🥓"].shuffled(),
+                      emoji: ["🥑", "🍅", "🥬", "🧊", "🍹", "🧉", "🥤", "🥩", "🍳", "🍕", "🍝", "🥓"],
                       color: "yellow"),
         "Space": Theme(name: "Space",
                        symbol: "moon.stars",
-                       emoji: ["🚀", "👨‍🚀", "🌟", "👩‍🚀", "🌌", "👽", "🚀", "🌠", "🔭", "💫"].shuffled(),
+                       emoji: ["🚀", "👨‍🚀", "🌟", "👩‍🚀", "🌌", "👽", "🌠", "🔭", "💫"].shuffled(),
                        color: "black")
     ]
     
@@ -76,7 +76,7 @@ class MemoryGame: ObservableObject {
     }
         
     private static func createGameModel(with theme: Theme) -> MemoryGameModel<String> {
-        return MemoryGameModel(numberOfPairsOfCards: theme.emoji.count) { pairIndex in
+        return MemoryGameModel(numberOfPairsOfCards: 10) { pairIndex in
             if theme.emoji.indices.contains(pairIndex) {
                 return theme.emoji[pairIndex]
             } else {
@@ -84,7 +84,6 @@ class MemoryGame: ObservableObject {
             }
         }
     }
-    
     
     var cards: Array<MemoryGameModel<String>.Card> {
         return model.cards
@@ -102,7 +101,9 @@ class MemoryGame: ObservableObject {
     }
     
     func newGame() {
-        model.newGame()
+        let theme = themes.randomElement()!.value
+        currentTheme = theme.name
+        self.model = MemoryGame.createGameModel(with: theme)
     }
     
     func choose(_ card: MemoryGameModel<String>.Card) {
